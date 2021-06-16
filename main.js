@@ -67,8 +67,8 @@ async function parentChild() {
     let j = 0
     while(j<allCourseData["availableCourses"].length) {
         if(course_index == j+1) {
-            url2 ="https://saral.navgurukul.org/api/courses/"+String(courseIdsList[j])+"/exercises"
-            file_name = "exercises"+String(courseIdsList[j])+".json"
+            let url2 ="https://saral.navgurukul.org/api/courses/"+String(courseIdsList[j])+"/exercises"
+            let file_name = "exercises"+String(courseIdsList[j])+".json"
             await online(file_name, url2)
             console.log()
             console.log(allCourseData["availableCourses"][j]['name'])
@@ -85,7 +85,7 @@ async function parentChild() {
                 }else{
                     let index = 0
                     while(index<courseData['data'][z]["childExercises"].length) {
-                        console.log("       ",index+1, courseData['data'][z]["childExercises"][index]['name'])
+                        console.log("       ", courseData['data'][z]["childExercises"][index]['name'])
                         index++
 
                     }   
@@ -99,7 +99,27 @@ async function parentChild() {
                 console.log(slug_index+1, listOfSlug[slug_index])
                 slug_index++
             }
+            console.log()
+            let choose_slug = readlinesync.question('select a slug----')
+            console.log()
+            let i = 0
+            while(i<listOfSlug.length) {
+                if(choose_slug == i+1) {
+                    let slug_url = "http://saral.navgurukul.org/api/courses/"+String(courseIdsList[j])+"/exercise/getBySlug?slug="+String(listOfSlug[i])
+                    axios.get(slug_url).then((res) => {
+                        let data = res.data
+                        console.log(data['content'])
+                    });break
+                   
+                }i++
+
+            }
+
         }j++
     }
 }
+
+
+
+
 parentChild()
