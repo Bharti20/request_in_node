@@ -10,7 +10,7 @@ async function online(fname, link) {
             // let rawData = fs.readFileSync('courses.json');
             // let storeData = JSON.parse(rawData);
             // resolve(storeData)
-            resolve(onvertToJsPaticularCourse(fname))
+            resolve(ConvertToJsPaticularCourse(fname))
             // console.log(typeof(storeData))
         }else{
             axios.get(link).then((res) => {
@@ -69,58 +69,36 @@ async function parentChild() {
     let courseIdsList = await availableCourses(allCourseData);
     console.log()
     course_index=readlinesync.question("select a course---")
-    let i = 0
-    // while(i<allCourseData["availableCourses"].length) {
-        if(course_index ==i+1) {
-            url2 ="https://saral.navgurukul.org/api/courses/"+String(courseIdsList[i])+"/exercises"
-            file_name = "exercises_",+String(courseIdsList[i])+".js"
+    listOfSlug = []
+    courses_ids= []
+    let j = 0
+    while(j<allCourseData["availableCourses"].length) {
+        if(course_index == j+1) {
+            url2 ="https://saral.navgurukul.org/api/courses/"+String(courseIdsList[j])+"/exercises"
+            file_name = "exercises"+String(courseIdsList[j])+".json"
             await online(file_name, url2)
+            console.log()
+            console.log(allCourseData["availableCourses"][j]['name'])
+            console.log()
             courseData = await ConvertToJsPaticularCourse(file_name)
-            console.log(courseData)
+            // console.log(courseData['data'].length)
+            let z = 0
+            while(z<courseData['data'].length) {
+                courses_ids.push(courseData['data'][z]['id'])
+                listOfSlug.push(courseData['data'][z]['slug'])
+                console.log("   ",z+1 ,courseData['data'][z]["name"])
+                if(courseData['data'][z]["childExercises"].length == 0){
+                    console.log("       ",courseData['data'][z]["childExercises"])
+                }else{
+                    let index = 0
+                    while(index<courseData['data'][z]["childExercises"].length) {
+                        console.log("       ",index+1, courseData['data'][z]["childExercises"][index]['name'])
+                        index++
 
-
-        }
-    //}
-
-
-
-
-
+                    }   
+                }z++
+            }
+        }j++
+    }
 }
 parentChild()
-
-
-
-
-
-
-
-// async function my() {
-//     let a = await promise
-//     let b = await consolCourses
-//     // console.log(a)
-// };
-// my()
-
-
-
-
-
-
-
-
-// function saveToJson() {
-//     axios.get(url).then((res) => {
-//         let data = res.data
-//         console.log(data)
-//         let jsonData = JSON.stringify(data, null, 2);
-//         fs.writeFile('courses.json', jsonData, (error) => {
-//             if(error) {
-//                 console.log(`Got error, ${error.message}`)
-//                 return 
-//             }
-//         })
-//     })
-
-// }
-// console.log(saveToJson())
