@@ -3,21 +3,18 @@ const fs = require('fs')
 const os = require('os');
 const url = 'https://saral.navgurukul.org/api/courses'
 const readlinesync = require('readline-sync')
-
+console.log()
+console.log("******************************* Welcome To Saral Page  **********************************************")
+console.log()
 async function online(fname, link) {
     return new Promise((resolve, reject) => {
         if(fs.existsSync(fname)) {
-            // let rawData = fs.readFileSync('courses.json');
-            // let storeData = JSON.parse(rawData);
-            // resolve(storeData)
             resolve(ConvertToJsPaticularCourse(fname))
-            // console.log(typeof(storeData))
         }else{
             axios.get(link).then((res) => {
                 let data = res.data
                 resolve(data)
                 let sData = JSON.stringify(data, null, 2);
-                // fs.writeFileSync('courses.json', sData);
                 fs.writeFileSync(fname, sData);
             })
         }
@@ -25,21 +22,20 @@ async function online(fname, link) {
 
     });
 }
-
 async function availableCourses(allData){
-    // let allData = await saveToJson('courses.json')
+    console.log()
+    console.log("*************************** Available Courses ******************************")
+    console.log()
+    
     id_array = []
     let i = 0
     while(i<allData["availableCourses"].length) {
             id_array.push(allData["availableCourses"][i]['id'])
             console.log(i+1, allData["availableCourses"][i]['name'])
             i++
-    
-
     }return id_array
     
 };
-
 async function convertToJs(){
     if(fs.existsSync('courses.json')) {
         let rawData = fs.readFileSync('courses.json');
@@ -52,18 +48,12 @@ async function convertToJs(){
             fs.writeFileSync('courses.json', sData);
         })
     }
-
-
 }
-
-
 async function ConvertToJsPaticularCourse(name) {
     let rawData = fs.readFileSync(name);
     let storeData = JSON.parse(rawData);
     return storeData
-
 }
-
 async function parentChild() {
     let allCourseData = await convertToJs()
     let courseIdsList = await availableCourses(allCourseData);
@@ -71,6 +61,9 @@ async function parentChild() {
     course_index=readlinesync.question("select a course---")
     listOfSlug = []
     courses_ids= []
+    console.log()
+    console.log("********************** Parent Child Exercise **************************")
+    console.log()
     let j = 0
     while(j<allCourseData["availableCourses"].length) {
         if(course_index == j+1) {
@@ -97,6 +90,14 @@ async function parentChild() {
 
                     }   
                 }z++
+            }
+            console.log()
+            console.log("********************************* Slugs ******************************************")
+            console.log()
+            let slug_index = 0
+            while(slug_index<listOfSlug.length) {
+                console.log(slug_index+1, listOfSlug[slug_index])
+                slug_index++
             }
         }j++
     }
