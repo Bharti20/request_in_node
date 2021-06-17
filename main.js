@@ -74,7 +74,6 @@ async function parentChild() {
             console.log(allCourseData["availableCourses"][j]['name'])
             console.log()
             courseData = await ConvertToJsPaticularCourse(file_name)
-            // console.log(courseData['data'].length)
             let z = 0
             while(z<courseData['data'].length) {
                 courses_ids.push(courseData['data'][z]['id'])
@@ -100,26 +99,60 @@ async function parentChild() {
                 slug_index++
             }
             console.log()
-            let choose_slug = readlinesync.question('select a slug----')
+            var choose_slug = readlinesync.question('select a slug----')
             console.log()
             let i = 0
             while(i<listOfSlug.length) {
                 if(choose_slug == i+1) {
                     let slug_url = "http://saral.navgurukul.org/api/courses/"+String(courseIdsList[j])+"/exercise/getBySlug?slug="+String(listOfSlug[i])
-                    axios.get(slug_url).then((res) => {
+                    await axios.get(slug_url).then((res) => {
                         let data = res.data
                         console.log(data['content'])
                     });break
-                   
                 }i++
 
             }
+            console.log()
+            console.log("************************************* User Choice ***********************************")
+            console.log()
+            while(true) {
+                console.log()
+                let user_choice = readlinesync.question('what you want to do 1. up, 2. pre, 3. next-------')
+                console.log()
+                if(user_choice == 'up') {
+                    await parentChild()
+                    break
+                
+                }else if(user_choice == 'next'){
+                    if(choose_slug == listOfSlug.length) {
+                        console.log('There no more slug')
+                        break
+                        
+                    }else {
+                        let slug_url = "http://saral.navgurukul.org/api/courses/"+String(courseIdsList[j])+"/exercise/getBySlug?slug="+String(listOfSlug[i+1])
+                        await axios.get(slug_url).then((res) => {
+                            let data = res.data
+                            console.log(data['content'])
+                        });break
+                    }
 
-        }j++
+                }else if(user_choice == 'pre') {
+                    if(choose_slug == 1) {
+                        console.log('There is no more previous slug')
+                        break
+                        
+                    }else{
+                        let slug_url = "http://saral.navgurukul.org/api/courses/"+String(courseIdsList[j])+"/exercise/getBySlug?slug="+String(listOfSlug[i-1])
+                        await axios.get(slug_url).then((res) => {
+                            let data = res.data
+                            console.log(data['content'])
+                        });break
+                    }
+                }
+            }
+        }
+        j++
     }
 }
-
-
-
-
 parentChild()
+
